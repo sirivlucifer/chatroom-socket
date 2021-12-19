@@ -1,16 +1,13 @@
 import socket
 import threading
 
-# Connection Data
-host = '127.0.0.1'
-port = 55555
+host = '127.0.0.1' #local
+port = 99999
 
-# Starting Server
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port))
 server.listen()
 
-# Lists For Clients and Their Nicknames
 clients = []
 nicknames = []
 
@@ -32,7 +29,7 @@ def handle(client):
             clients.remove(client)
             client.close()
             nickname = nicknames[index]
-            broadcast('{} left!'.format(nickname).encode('ascii'))
+            broadcast('{} ayrildi!'.format(nickname).encode('ascii'))
             nicknames.remove(nickname)
             break
 
@@ -41,7 +38,7 @@ def receive():
     while True:
         # Accept Connection
         client, address = server.accept()
-        print("Connected with {}".format(str(address)))
+        print("Beraber katildi {}".format(str(address)))
 
         # Request And Store Nickname
         client.send('NICK'.encode('ascii'))
@@ -50,9 +47,9 @@ def receive():
         clients.append(client)
 
         # Print And Broadcast Nickname
-        print("Nickname is {}".format(nickname))
-        broadcast("{} joined!".format(nickname).encode('ascii'))
-        client.send('Connected to server!'.encode('ascii'))
+        print("Kullanici adi: {}".format(nickname))
+        broadcast("{} katildi!".format(nickname).encode('ascii'))
+        client.send('Sunucuya katildi!'.encode('ascii'))
 
         # Start Handling Thread For Client
         thread = threading.Thread(target=handle, args=(client,))

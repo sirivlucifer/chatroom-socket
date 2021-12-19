@@ -1,37 +1,30 @@
 import socket
 import threading
 
-# Choosing Nickname
-nickname = input("Choose your nickname: ")
+nickname = input("Kullanici adinizi yaziniz: ")
 
-# Connecting To Server
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(('127.0.0.1', 55555))
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #sock_stream tcp tanımlama
+#AF_INET, IPv4 için İnternet adresi ailesidir. SOCK_STREAM, mesajlarımızı ağda taşımak için kullanılacak protokol olan TCP için soket tipidir.
+client.connect(('127.0.0.1', 99999))
 
-# Listening to Server and Sending Nickname
 def receive():
     while True:
         try:
-            # Receive Message From Server
-            # If 'NICK' Send Nickname
             message = client.recv(1024).decode('ascii')
-            if message == 'NICK':
+            if message == 'Kullanici Adi:':
                 client.send(nickname.encode('ascii'))
             else:
                 print(message)
         except:
-            # Close Connection When Error
-            print("An error occured!")
+            print("Error Hata Dikkat!")
             client.close()
             break
 
-# Sending Messages To Server
 def write():
     while True:
         message = '{}: {}'.format(nickname, input(''))
         client.send(message.encode('ascii'))
 
-# Starting Threads For Listening And Writing
 receive_thread = threading.Thread(target=receive)
 receive_thread.start()
 
